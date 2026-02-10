@@ -22,9 +22,11 @@ jobs:
       id: digest
       run: |
         FULL_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/cameron-doyle/backend_test:latest)
-        DIGEST=${FULL_DIGEST#*@}
+        # FULL_DIGEST looks like: ghcr.io/.../backend_test@sha256:abcdef...
+        DIGEST_WITH_PREFIX=${FULL_DIGEST#*@}
+        DIGEST=${DIGEST_WITH_PREFIX#*:}
         echo "Full image reference: $FULL_DIGEST"
-        echo "Stripped digest: $DIGEST"
+        echo "Stripped digest (no sha256:): $DIGEST"
         echo "digest=$DIGEST" >> $GITHUB_OUTPUT
 
     - name: Set release metadata
@@ -44,5 +46,5 @@ jobs:
           Deployed image:
 
           ```bash
-          docker pull ghcr.io/cameron-doyle/backend_test:${{ steps.meta.outputs.tag }}
+          docker pull ghcr.io/cameron-doyle/backend_test:${{ steps.digest.outputs.digest }}
           ```
