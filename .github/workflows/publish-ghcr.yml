@@ -1,0 +1,33 @@
+name: Build docker image
+on: [push]
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Build and push Image
+        uses: actions/checkout@v5
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: cameron-doyle
+          password: ${{ secrets.GH_PAT }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          no-cache: true
+          build-args: |
+            BUILD_VERSION=${{ github.sha }}
+          tags: |
+            ghcr.io/cameron-doyle/portfolio:latest
+            ghcr.io/cameron-doyle/portfolio:${{ github.sha }}
