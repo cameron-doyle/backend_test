@@ -16,12 +16,12 @@ jobs:
         password: ${{ secrets.GH_PAT }}
 
     - name: Pull latest image
-      run: docker pull ghcr.io/cameron-doyle/portfolio:latest
+      run: docker pull ghcr.io/cameron-doyle/backend_test:latest
 
     - name: Get image digest
       id: digest
       run: |
-        FULL_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/cameron-doyle/portfolio:latest)
+        FULL_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/cameron-doyle/backend_test:latest)
         DIGEST=${FULL_DIGEST#*@}
         echo "Full image reference: $FULL_DIGEST"
         echo "Stripped digest: $DIGEST"
@@ -44,5 +44,5 @@ jobs:
           Deployed image:
 
           ```bash
-          docker pull ${{ steps.digest.outputs.full_digest }}
+          docker pull ghcr.io/cameron-doyle/backend_test:${{ steps.meta.outputs.tag }}
           ```
