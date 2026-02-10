@@ -1,0 +1,38 @@
+{
+  // Debug configurations for this project only.
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Run server + Chrome (Incognito)",
+      "configurations": ["Run Node Server (server.js)", "Open Chrome (Incognito)"],
+      "stopAll": true
+    }
+  ],
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Node Server (server.js)",
+      // Run server.js directly with the Windows Node runtime; avoids using WSL shell.
+      "program": "${workspaceFolder}/server.js",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "8080"
+      }
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Open Chrome (Incognito)",
+      "url": "http://localhost:8080/",
+      "webRoot": "${workspaceFolder}",
+      "runtimeExecutable": "${env:ProgramFiles}\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe",
+      "runtimeArgs": ["--incognito", "--new-window"],
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-profile"
+    }
+  ]
+}
+

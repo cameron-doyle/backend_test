@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Node Boilerplate Website</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <h1>Node Boilerplate Website</h1>
+        <p>A simple starter with Node.js backend and HTML/CSS/JS frontend.</p>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <div class="container">
+        <section class="card">
+          <h2>Frontend Section</h2>
+          <p>
+            This page is served as a static file from the Node.js/Express
+            backend.
+          </p>
+          <button id="hello-btn">Call Backend API</button>
+          <p id="hello-result" class="result-text"></p>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <small>&copy; <span id="year"></span> Node Boilerplate Website</small>
+      </div>
+    </footer>
+
+    <script src="main.js"></script>
+  </body>
+  </html>
+
