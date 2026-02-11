@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    - name: Log in to GHCR
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: cameron-doyle
+        password: ${{ secrets.GH_PAT }}
+
+    - name: Build and push image
+      id: build
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        no-cache: true
+        build-args: |
+          BUILD_VERSION=${{ github.sha }}
+        tags: |
+          ghcr.io/cameron-doyle/backend_test:latest
+          ghcr.io/cameron-doyle/backend_test:${{ github.sha }}
+
+    - name: Compute full image digest
+      id: digest
+      run: |
+        FULL_DIGEST="ghcr.io/cameron-doyle/backend_test@${{ steps.build.outputs.digest }}"
+        echo "Full image reference: $FULL_DIGEST"
+        echo "full_digest=$FULL_DIGEST" >> $GITHUB_OUTPUT
+
+    - name: Set release metadata
+      id: meta
+      run: |
+        echo "tag=release-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+        echo "name=Release $(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+    - name: Create GitHub release
+      uses: softprops/action-gh-release@v2
+      with:
+        token: ${{ secrets.GH_PAT }}
+        tag_name: ${{ steps.meta.outputs.tag }}
+        name: ${{ steps.meta.outputs.name }}
+        make_latest: "true"
+        body: |
+          Deployed image:
+
+          ```bash
+          docker pull ${{ steps.digest.outputs.full_digest }}
+          ```
